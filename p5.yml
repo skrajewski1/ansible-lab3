@@ -1,0 +1,20 @@
+---
+- hosts: ws
+  become: yes
+
+  vars:
+    my_variable: "This is a test of the variable"
+    my_name: Sean
+
+  tasks:
+    - name: Print a message
+      debug:
+        msg: "This is the Debug module message"
+
+    - name: Print variable
+      debug:
+        var: my_variable
+
+    - name: Print variable Name
+      debug:
+        msg: "{{ my_name }}"
