@@ -1,0 +1,58 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: true
+  
+  tasks:
+    - name: Install nginx on Debian
+      package:
+        name: nginx
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
+    - name: Install httpd on Redhat
+      yum:
+        name: httpd
+        state: present
+      when: ansible_os_family == "Redhat"
+
+    - name: Start httpd daemon on Redhat
+      service:
+        name: httpd
+        state: started
+        enabled: yes 
+      when: ansible_os_family == "Redhat"
+    
+    - name: Start nginx daemon on Debian
+      service:
+        name: nginx
+        state: started
+        enabled: true 
+      when: ansible_os_family == "Debian"
+
+    - name: Create user sean
+      user: 
+        name: sean
+        comment: devops
+        shell: /bin/bash
+    
+    - name: Create a group
+      group: 
+        name: devops
+        state: present
+
+    - name: Ensure /var/www/html directory exists
+      file:
+        path: /var/www/html
+        state: directory
+
+    - name: Create index.html file
+      copy:
+        dest: /var/www/html/index.html
+        content: "<h1>This is created using Ansible</h1>"
+
+    - name: Create directory /tmp/os
+      file: 
+        path: /tmp/os
+        state: directory

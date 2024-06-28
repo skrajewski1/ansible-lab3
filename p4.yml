@@ -1,0 +1,32 @@
+---
+- hosts: ws
+  become: true
+
+  tasks:
+    - name: Create group
+      group:
+        name: deployers
+        state: present
+        
+    - name: Create user deploy
+      user:
+        name: deploy
+        create_home: yes
+        group: deployers
+        shell: /bin/bash
+        state: present
+
+    - name: Check if directory exists
+      stat:
+        path: /opt
+      register: directory_exists
+
+    - name: Check if directory exists
+      find:
+        path: /opt
+        file_type: directory
+
+    - name: Print directory exists
+      debug:
+        msg: "Directory exists: {{ dir_check.files | length > 0 }}"
+      when: dir_check.files | length > 0
