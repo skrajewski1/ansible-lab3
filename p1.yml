@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: yes
+  
+  tasks:
+    - name: Install nginx
+      package:
+        name: nginx
+        state: present
+      when: ansible_processor_nproc > 2 and ansible_os_family == "RedHat"
+    
+    - name: Create user sean
+      user: 
+        name: sean
+        comment: devops
+        shell: /bin/bash
+    
+    - name: Create a group
+      group: 
+        name: devops
+        state: present
+
+- hosts: ws
+  become: True
+  
+  tasks:
+    - name: Delete a group
+      group: 
+        name: cloudteam
+        state: absent
